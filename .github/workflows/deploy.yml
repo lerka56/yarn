@@ -4,13 +4,29 @@ on:
   push:
     branches:
       - main
+      - master
+
+# Add permissions section
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    
+    # Add permissions at job level as well
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
     steps:
       - uses: actions/checkout@v3
-      
+        with:
+          fetch-depth: 0
+          
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -27,3 +43,10 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          commit_message: 'Deploy to GitHub Pages'
+          # Optional: Keep existing files
+          keep_files: false
+          # Optional: Force push
+          force_orphan: true
