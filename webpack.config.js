@@ -7,7 +7,9 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'bundle.[contenthash].js',
-        clean: true
+        clean: true,
+        // Уберите publicPath для GitHub Pages или оставьте пустым
+        publicPath: './'  // Используйте './' вместо '/yarn/'
     },
     module: {
         rules: [
@@ -19,7 +21,8 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './src/index.html'
+            template: './src/index.html',
+            // Уберите base, если он вызывает проблемы
         }),
         new MiniCssExtractPlugin({
             filename: 'styles.[contenthash].css'
@@ -30,6 +33,7 @@ module.exports = {
             directory: path.join(__dirname, 'dist')
         },
         port: 3000,
-        open: true
+        open: true,
+        historyApiFallback: true
     }
 };

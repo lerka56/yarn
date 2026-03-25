@@ -6,27 +6,18 @@ on:
       - main
       - master
 
-# Add permissions section
+# Добавьте разрешения
 permissions:
   contents: write
-  pages: write
-  id-token: write
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     
-    # Add permissions at job level as well
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-    
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          
+      - name: Checkout
+        uses: actions/checkout@v3
+        
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
@@ -35,18 +26,13 @@ jobs:
       - name: Install dependencies
         run: yarn install
         
-      - name: Build project
+      - name: Build
         run: yarn build
         
-      - name: Deploy to GitHub Pages
+      - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          user_name: 'github-actions[bot]'
-          user_email: 'github-actions[bot]@users.noreply.github.com'
-          commit_message: 'Deploy to GitHub Pages'
-          # Optional: Keep existing files
-          keep_files: false
-          # Optional: Force push
+          publish_branch: gh-pages
           force_orphan: true
