@@ -4,9 +4,7 @@ on:
   push:
     branches:
       - main
-      - master
 
-# Добавьте разрешения
 permissions:
   contents: write
 
@@ -29,10 +27,14 @@ jobs:
       - name: Build
         run: yarn build
         
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Copy to docs
+        run: |
+          rm -rf docs
+          cp -r dist docs
+          
+      - name: Deploy to main branch
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
-          force_orphan: true
+          commit_message: "Deploy to docs folder"
+          branch: main
+          file_pattern: docs/
