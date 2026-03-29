@@ -178,8 +178,14 @@ h1 {
 }
 
 .drag-placeholder {
-    background: #e4e6ea;
-    border-radius: 6px;
-    margin-bottom: 8px;
-    height: 60px;
+    background-color: #e2e4e6;
+    border-radius: 4px;
+    height: 80px;
+    margin: 8px 0;
+    transition: all 0.2s ease;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
 }

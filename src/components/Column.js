@@ -1,4 +1,5 @@
 import { Card } from './Card.js';
+import { DragDropManager } from './drag-drop-manager.js';
 
 export class Column {
     constructor(id, title, cards, onCardDelete, onCardMove, onCardAdd) {
@@ -10,6 +11,7 @@ export class Column {
         this.onCardAdd = onCardAdd;
         this.element = null;
         this.isAdding = false;
+        this.dragDropManager = new DragDropManager();
     }
 
     render() {
@@ -36,7 +38,12 @@ export class Column {
         column.appendChild(cardsContainer);
         column.appendChild(addButton);
         
-        this.setupDragAndDrop(column, cardsContainer);
+        // Используем менеджер Drag and Drop
+        this.dragDropManager.setupColumnDragAndDrop(
+            cardsContainer, 
+            this.id, 
+            this.onCardMove
+        );
         
         this.element = column;
         return column;
@@ -50,8 +57,8 @@ export class Column {
                 card.text,
                 this.id,
                 this.onCardDelete,
-                this.handleDragStart.bind(this),
-                this.handleDragEnd.bind(this)
+                (e, cardElement) => this.dragDropManager.handleDragStart(cardElement),
+                () => this.dragDropManager.handleDragEnd()
             );
             container.appendChild(cardComponent.render());
         });
@@ -79,6 +86,8 @@ export class Column {
                 this.onCardAdd(this.id, text);
                 form.remove();
                 this.isAdding = false;
+                const addButton = column.querySelector('.add-card-btn');
+                addButton.style.display = 'flex';
             }
         };
         
@@ -87,6 +96,8 @@ export class Column {
         cancelBtn.onclick = () => {
             form.remove();
             this.isAdding = false;
+            const addButton = column.querySelector('.add-card-btn');
+            addButton.style.display = 'flex';
         };
         
         buttonsDiv.appendChild(addBtn);
@@ -99,86 +110,5 @@ export class Column {
         column.insertBefore(form, addButton);
         
         textarea.focus();
-    }
-    
-    setupDragAndDrop(column, container) {
-        container.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.dataTransfer.dropEffect = 'move';
-            
-            const draggingCard = document.querySelector('.card.dragging');
-            if (!draggingCard) return;
-            
-            const afterElement = this.getDragAfterElement(container, e.clientY);
-            const currentCard = container.querySelector('.card:not(.dragging)');
-            
-            if (!container.querySelector('.drag-placeholder')) {
-                const placeholder = document.createElement('div');
-                placeholder.className = 'drag-placeholder';
-                
-                if (afterElement) {
-                    afterElement.parentNode.insertBefore(placeholder, afterElement);
-                } else {
-                    container.appendChild(placeholder);
-                }
-            }
-        });
-        
-        container.addEventListener('dragleave', (e) => {
-            const placeholder = container.querySelector('.drag-placeholder');
-            if (placeholder) {
-                placeholder.remove();
-            }
-        });
-        
-        container.addEventListener('drop', (e) => {
-            e.preventDefault();
-            
-            const placeholder = container.querySelector('.drag-placeholder');
-            if (!placeholder) return;
-            
-            const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-            const targetColumnId = this.id;
-            
-            if (data.columnId !== targetColumnId) {
-                this.onCardMove(data.id, data.columnId, targetColumnId, null);
-            } else {
-                const cards = Array.from(container.children).filter(child => 
-                    child.classList && child.classList.contains('card')
-                );
-                const newIndex = cards.indexOf(placeholder.nextElementSibling);
-                this.onCardMove(data.id, data.columnId, targetColumnId, newIndex);
-            }
-            
-            placeholder.remove();
-        });
-    }
-    
-    getDragAfterElement(container, y) {
-        const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
-        
-        return draggableElements.reduce((closest, child) => {
-            const box = child.getBoundingClientRect();
-            const offset = y - box.top - box.height / 2;
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
-            }
-        }, { offset: Number.NEGATIVE_INFINITY }).element;
-    }
-    
-    handleDragStart(e, card) {
-        card.style.opacity = '0.5';
-    }
-    
-    handleDragEnd(e) {
-        const cards = document.querySelectorAll('.card');
-        cards.forEach(card => {
-            card.style.opacity = '';
-        });
-        
-        const placeholders = document.querySelectorAll('.drag-placeholder');
-        placeholders.forEach(p => p.remove());
     }
 }
