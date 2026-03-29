@@ -1,0 +1,191 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    background: #0079bf;
+    padding: 20px;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+h1 {
+    color: white;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.board {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+    overflow-x: auto;
+    padding-bottom: 20px;
+}
+
+.column {
+    background: #ebecf0;
+    border-radius: 8px;
+    width: 280px;
+    min-width: 280px;
+    padding: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+.column-header {
+    font-weight: bold;
+    margin-bottom: 12px;
+    padding: 0 4px;
+    font-size: 16px;
+    color: #172b4d;
+}
+
+.cards-container {
+    min-height: 100px;
+}
+
+.card {
+    background: white;
+    border-radius: 6px;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    cursor: grab;
+    position: relative;
+    word-wrap: break-word;
+    transition: all 0.2s ease;
+}
+
+.card:active {
+    cursor: grabbing;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.card:hover {
+    background: #f4f5f7;
+}
+
+.card:hover .delete-card {
+    display: block;
+}
+
+.delete-card {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #6b778c;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.delete-card:hover {
+    color: #eb5a46;
+}
+
+.add-card-btn {
+    background: none;
+    border: none;
+    color: #5e6c84;
+    padding: 8px 4px;
+    margin-top: 8px;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.add-card-btn:hover {
+    background: #e4e6ea;
+    color: #172b4d;
+}
+
+.card-form {
+    background: white;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+
+.card-form textarea {
+    width: 100%;
+    border: 2px solid #0079bf;
+    border-radius: 4px;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+    margin-bottom: 8px;
+}
+
+.card-form-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.card-form-buttons button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.card-form-buttons button:first-child {
+    background: #0079bf;
+    color: white;
+}
+
+.card-form-buttons button:first-child:hover {
+    background: #026aa7;
+}
+
+.card-form-buttons button:last-child {
+    background: none;
+    color: #6b778c;
+}
+
+.card-form-buttons button:last-child:hover {
+    background: #e4e6ea;
+}
+
+.drag-over {
+    background: #e4e6ea;
+    border-radius: 6px;
+}
+
+.drag-over::before {
+    content: '';
+    display: block;
+    height: 2px;
+    background: #0079bf;
+    margin: -1px 0;
+}
+
+.drag-placeholder {
+    background-color: #e2e4e6;
+    border-radius: 4px;
+    height: 80px;
+    margin: 8px 0;
+    transition: all 0.2s ease;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
